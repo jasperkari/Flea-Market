@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "user client",
   "version": "1.0.0",
-  "description": "Flea market server",
+  "description": "User client server",
   "main": "index.js",
   "scripts": {
     "preinstall": "npm i nodemon -g",
@@ -11,7 +11,10 @@
   "author": "Jasper Kari",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "@cloudant/cloudant": "^4.5.1",
+    "@ibm-cloud/cloudant": "^0.5.2",
+    "express": "^4.18.2",
+    "ibm-cloud-sdk-core": "^4.0.8"
   },
   "devDependencies": {
     "eslint": "^8.40.0",

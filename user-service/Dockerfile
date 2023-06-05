@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose port 3000 in the container
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the app when the container starts
 CMD ["node", "index.js"]
