@@ -1,23 +1,14 @@
 {
-  "name": "user client",
-  "version": "1.0.0",
-  "description": "User client server",
-  "main": "index.js",
-  "scripts": {
-    "preinstall": "npm i nodemon -g",
-    "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Jasper Kari",
-  "license": "ISC",
   "dependencies": {
-    "@cloudant/cloudant": "^4.5.1",
-    "@ibm-cloud/cloudant": "^0.5.2",
-    "express": "^4.18.2",
-    "ibm-cloud-sdk-core": "^4.0.8"
+    "@ibm-cloud/cloudant": "^0.0.22",
+    "bcrypt": "^5.1.0",
+    "ibm-cloud-sdk-core": "^4.0.8",
+    "jsonwebtoken": "^8.5.1",
+    "moleculer": "^0.14.29",
+    "moleculer-web": "^0.10.5"
   },
   "devDependencies": {
-    "eslint": "^8.40.0",
+    "eslint": "^8.42.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
