@@ -12,7 +12,7 @@ module.exports = {
           error: 'Invalid input: username, password and email are required'
         };
       }
-      const users = await ctx.call('db.getUsers');
+      const users = await ctx.call('userDb.getUsers');
       const userExists = users.some(
         (user) => user.username === params.username
       );
@@ -27,7 +27,7 @@ module.exports = {
         email: params.email,
         admin: false
       };
-      const response = await ctx.call('db.createUser', user);
+      const response = await ctx.call('userDb.createUser', user);
       return response.result;
     }
   }

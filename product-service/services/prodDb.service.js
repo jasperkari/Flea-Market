@@ -11,54 +11,55 @@ const service = CloudantV1.newInstance({
 });
 
 module.exports = {
-  name: 'db',
+  name: 'prodDb',
   actions: {
-    async getUsers() {
+    async getProducts() {
       const response = await service.postAllDocs({
-        db: 'user',
+        db: 'product',
         includeDocs: true
       });
-      const users = response.result.rows.map((row) => ({
+      const products = response.result.rows.map((row) => ({
         id: row.doc._id,
         rev: row.doc._rev,
+        image: row.doc.image,
+        name: row.doc.name,
         username: row.doc.username,
-        password: row.doc.password,
-        email: row.doc.email,
-        admin: row.doc.admin
+        price: row.doc.price,
+        description: row.doc.description
       }));
-      return users;
+      return products;
     },
-    async createUser(ctx) {
+    async createProduct(ctx) {
       const response = await service.postDocument({
-        db: 'user',
+        db: 'product',
         document: ctx.params
       });
       return response.result;
     },
-    async updateUser(ctx) {
-      const { id, user } = ctx.params;
+    async updateProduct(ctx) {
+      const { id, name } = ctx.params;
       const response = await service.postDocument({
-        db: 'user',
+        db: 'product',
         document: {
           _id: id,
-          ...user
+          ...name
         }
       });
       return response.result;
     },
-    async deleteUser(ctx) {
+    async deleteProduct(ctx) {
       const { params } = ctx;
-      const users = await ctx.call('db.getUsers');
-      const userExists = users.find(
-        (user) => user.username === params.username
+      const products = await ctx.call('db.getProducts');
+      const productExists = products.find(
+        (product) => product.id === params.id
       );
-      if (!userExists) {
+      if (!productExists) {
         return { error: "A user with this username doesn't exists" };
       }
       const response = await service.deleteDocument({
-        db: 'user',
-        docId: userExists.id,
-        rev: userExists.rev
+        db: 'product',
+        docId: productExists.id,
+        rev: productExists.rev
       });
       return response.result;
     }

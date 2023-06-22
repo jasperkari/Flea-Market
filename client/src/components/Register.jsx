@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
+import '../styles/Register.css';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';

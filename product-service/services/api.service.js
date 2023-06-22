@@ -1,3 +1,5 @@
+const multer = require('multer');
+
 const ApiService = require('moleculer-web');
 const { authenticate } = require('../middlewares/authenticate');
 
@@ -5,10 +7,11 @@ module.exports = {
   name: 'api',
   mixins: [ApiService],
   settings: {
-    port: 3001,
+    port: 3002,
     routes: [
       {
-        path: '/login',
+        name: 'get-products',
+        path: '/products',
         cors: {
           origin: '*',
           methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
@@ -18,37 +21,23 @@ module.exports = {
           maxAge: 3600
         },
         aliases: {
-          'POST /': 'auth.login'
+          'GET /': 'prodDb.getProducts'
         }
       },
       {
-        path: '/register',
+        name: 'post-products',
+        path: '/products/create',
         cors: {
           origin: '*',
           methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
-          allowedHeaders: ['Content-Type'],
+          allowedHeaders: ['Content-Type', 'Authorization'],
           exposedHeaders: [],
           credentials: false,
           maxAge: 3600
         },
+        use: [authenticate, multer().any()],
         aliases: {
-          'POST /': 'reg.register'
-        }
-      },
-      {
-        path: '/users',
-        cors: {
-          origin: '*',
-          methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
-          allowedHeaders: ['Content-Type'],
-          exposedHeaders: [],
-          credentials: false,
-          maxAge: 3600
-        },
-        use: [authenticate],
-        aliases: {
-          'GET /': 'userDb.getUsers',
-          'DELETE /': 'userDb.deleteUser'
+          'POST /': 'prodDb.createProduct'
         }
       }
     ]

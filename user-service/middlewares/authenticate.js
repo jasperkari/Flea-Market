@@ -17,7 +17,7 @@ module.exports = {
       const decoded = jwt.verify(token, secret);
       req.$ctx.meta.user = decoded;
       const ctx = req.$ctx;
-      const users = await ctx.call('db.getUsers');
+      const users = await ctx.call('userDb.getUsers');
       const user = users.find((u) => u.username === decoded.username);
       if (!user || user.password !== decoded.password) {
         res.statusCode = 401;

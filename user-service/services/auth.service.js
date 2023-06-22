@@ -8,7 +8,7 @@ module.exports = {
   actions: {
     async login(ctx) {
       const { username, password } = ctx.params;
-      const users = await ctx.call('db.getUsers');
+      const users = await ctx.call('userDb.getUsers');
       const user = users.find((u) => u.username === username);
       if (user) {
         const match = await bcrypt.compare(password, user.password);
@@ -22,6 +22,24 @@ module.exports = {
         }
       }
       throw new Error(`Invalid credentials`);
+    },
+    async authenticate(ctx) {
+      const token = ctx.params;
+
+      try {
+        const decoded = jwt.verify(token, secret);
+        const users = await ctx.call('userDb.getUsers');
+        const user = users.find((u) => u.username === decoded.username);
+        console.log(decoded);
+        console.log(users);
+        console.log(token);
+        if (!user || user.password !== decoded.password) {
+          return { authenticated: false };
+        }
+      } catch (error) {
+        return { authenticated: false };
+      }
+      return { authenticated: true };
     }
   }
 };

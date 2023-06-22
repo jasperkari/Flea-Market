@@ -1,3 +1,4 @@
+import '../styles/Login.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Register from './Register';

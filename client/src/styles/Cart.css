@@ -1,0 +1,14 @@
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 28.3em;
+  z-index: 10000;
+  background-color: grey;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.cart button {
+  color: black;
+  background-color: black;
+}
