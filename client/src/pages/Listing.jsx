@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import TopNav from '../components/TopNav';
 import Card from '../components/Card';
 
-function App() {
+function Listing() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState(() => {
     const storedCart = localStorage.getItem('cart');
@@ -14,7 +14,8 @@ function App() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const admin = localStorage.getItem('admin') === 'true';
+  const [error, setError] = useState(false);
+  const token = localStorage.getItem('token');
 
   function fetchWithTimeout(url, options, timeout = 5000) {
     return Promise.race([
@@ -27,25 +28,22 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchWithTimeout('http://localhost:3002/products', {}, 10000)
+    fetchWithTimeout(
+      'http://localhost:3002/userproducts',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      10000,
+    )
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
         setIsLoading(false);
       });
     localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      if (!prevCart.some((item) => item.id === product.id)) {
-        // return [...prevCart, product];
-        const { image, ...productWithoutImage } = product;
-        return [...prevCart, productWithoutImage];
-      }
-      return prevCart;
-    });
-  };
+  }, [token, cart]);
 
   const removeFromCart = (product) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== product.id));
@@ -70,14 +68,37 @@ function App() {
     return true;
   });
 
+  const onRemoveProduct = (product) => {
+    const data = {
+      id: product.id,
+    };
+
+    fetch('http://localhost:3002/userproducts', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          setError(true);
+        }
+      })
+      .catch(() => {
+        setError(true);
+      });
+  };
+
   return (
     <div className="App">
       <TopNav cart={cart} onRemoveFromCart={removeFromCart} />
       <div className="Content">
-        <h1>Welcome to our Online Flea Market!!</h1>
-        <p>
-          Here you can find a variety of items for sale from different vendors.
-        </p>
+        <h1>Your Listings</h1>
+        <p>These are listings that you have made.</p>
         <div className="search-filter">
           <div>
             <label htmlFor="search">Search:</label>
@@ -122,10 +143,10 @@ function App() {
               name={product.name}
               price={product.price}
               description={product.description}
-              onAddToCart={() => addToCart(product)}
               isInCart={cart.some((item) => item.id === product.id)}
-              showBuyButton={!admin}
-              showRemoveButton={admin}
+              showRemoveButton
+              onRemoveProduct={() => onRemoveProduct(product)}
+              error={error}
             />
           ))
         )}
@@ -134,4 +155,4 @@ function App() {
   );
 }
 
-export default App;
+export default Listing;

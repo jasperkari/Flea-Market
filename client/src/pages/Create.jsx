@@ -1,9 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TopNav from '../components/TopNav';
 
 function Create() {
   const [submissionStatus, setSubmissionStatus] = useState('');
+  const [cart, setCart] = useState(() => {
+    const storedCart = localStorage.getItem('cart');
+    return storedCart ? JSON.parse(storedCart) : [];
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,17 +34,25 @@ function Create() {
       });
   };
 
+  const removeFromCart = (product) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== product.id));
+  };
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
   return (
     <div>
-      <TopNav />
+      <TopNav cart={cart} onRemoveFromCart={removeFromCart} />;
       <div>
         <h1>Create a Flea Market Item</h1>
         <form onSubmit={handleSubmit}>
-          {/* <label htmlFor="image">Image:</label>
+          <label htmlFor="image">Image:</label>
           <br />
           <input type="file" id="image" name="image" />
           <br />
-          <br /> */}
+          <br />
           <label htmlFor="name">Name:</label>
           <br />
           <input type="text" id="name" name="name" />

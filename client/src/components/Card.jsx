@@ -10,10 +10,18 @@ function Card({
   description,
   onAddToCart,
   isInCart,
+  showBuyButton,
+  showRemoveButton,
+  onRemoveProduct,
+  error,
 }) {
+  const uint8Array = new Uint8Array(image.data);
+  const blob = new Blob([uint8Array], { type: 'image/png' });
+  const imageUrl = URL.createObjectURL(blob);
+
   return (
     <div className="card">
-      <img src={image} alt={name} style={{ width: '100%' }} />
+      <img src={imageUrl} alt={name} style={{ width: '100%' }} />
       <div className="container">
         <h4>
           <b>{name}</b>
@@ -22,13 +30,20 @@ function Card({
         <p>{price}€</p>
         <div>
           <p>{description}</p>
-          {isInCart ? (
-            <p>In Cart</p>
-          ) : (
-            <button type="button" onClick={onAddToCart}>
-              Buy
+          {showBuyButton &&
+            (isInCart ? (
+              <p>In Cart</p>
+            ) : (
+              <button type="button" onClick={onAddToCart}>
+                Buy
+              </button>
+            ))}
+          {showRemoveButton && (
+            <button type="button" onClick={onRemoveProduct}>
+              Remove
             </button>
           )}
+          {error && <p>There was an error removing the product.</p>}
         </div>
       </div>
     </div>
@@ -36,17 +51,31 @@ function Card({
 }
 
 Card.defaultProps = {
-  image: '/default-image.png',
+  error: false,
+  onRemoveProduct: null,
+  showRemoveButton: false,
+  showBuyButton: false,
+  onAddToCart: null,
 };
 
 Card.propTypes = {
-  image: PropTypes.string,
+  image: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      type: PropTypes.string,
+      data: PropTypes.arrayOf(PropTypes.number),
+    }),
+  ]).isRequired,
   name: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  onAddToCart: PropTypes.func.isRequired,
+  onAddToCart: PropTypes.func,
   isInCart: PropTypes.bool.isRequired,
+  showBuyButton: PropTypes.bool,
+  showRemoveButton: PropTypes.bool,
+  onRemoveProduct: PropTypes.func,
+  error: PropTypes.bool,
 };
 
 export default Card;

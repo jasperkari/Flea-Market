@@ -165,3 +165,8 @@ sketch
 **/etc/mysql/
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node
+
+# Ignore Docker-related files
+Dockerfile
+docker-compose.yml
+*.dockerignore

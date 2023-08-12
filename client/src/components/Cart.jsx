@@ -1,15 +1,22 @@
 import '../styles/Cart.css';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 function Cart({ cart, onRemoveFromCart }) {
+  const navigate = useNavigate();
+
   const handleRemoveFromCart = (product) => {
     onRemoveFromCart(product);
   };
 
+  const onCheckout = () => {
+    navigate('/checkout');
+  };
+
   return (
     <div>
-      <h3>Shopping Cart</h3>
+      <h3 className="text">Shopping Cart</h3>
       {cart.map((product) => (
         <div key={product.id}>
           <p>{product.name}</p>
@@ -18,7 +25,9 @@ function Cart({ cart, onRemoveFromCart }) {
           </button>
         </div>
       ))}
-      <button type="button">Checkout</button>
+      <button type="button" className="button" onClick={onCheckout}>
+        Checkout
+      </button>
     </div>
   );
 }

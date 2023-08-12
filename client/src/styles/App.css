@@ -14,3 +14,19 @@
 .close {
   float: right;
 }
+
+.search-input {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+}
+
+.search-filter > div {
+  margin-right: 10px;
+}

@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import Login from './Login';
 import Cart from './Cart';
 
-function TopNav({ cart, onRemoveFromCart }) {
+function TopNav({ cart, onRemoveFromCart, showCart }) {
   const [isCartVisible, setIsCartVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const admin = localStorage.getItem('admin') === 'true';
 
   const toggleCart = () => {
     setIsCartVisible((prevIsCartVisible) => !prevIsCartVisible);
@@ -18,19 +20,34 @@ function TopNav({ cart, onRemoveFromCart }) {
       <a href="/">Home</a>
       <a href="/contact">Contact</a>
       <a href="/about">About</a>
-      <a href="/create">Create</a>
-      <button className="cart" type="button" onClick={toggleCart}>
-        Shopping Cart
-      </button>
+      {isLoggedIn && !admin && (
+        <>
+          <a href="/orders">Orders</a>
+          <a href="/create">Create</a>
+          <a href="/listings">My listings</a>
+        </>
+      )}
+      {showCart && (
+        <>
+          <button className="cart" type="button" onClick={toggleCart}>
+            Shopping Cart
+          </button>
+        </>
+      )}
       {isCartVisible && (
         <div className="cart-dropdown">
           <Cart cart={cart} onRemoveFromCart={onRemoveFromCart} />
         </div>
       )}
-      <Login />
+      <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
     </div>
   );
 }
+
+TopNav.defaultProps = {
+  onRemoveFromCart: null,
+  showCart: true,
+};
 
 TopNav.propTypes = {
   cart: PropTypes.arrayOf(
@@ -40,7 +57,8 @@ TopNav.propTypes = {
       price: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  onRemoveFromCart: PropTypes.func.isRequired,
+  onRemoveFromCart: PropTypes.func,
+  showCart: PropTypes.bool,
 };
 
 export default TopNav;

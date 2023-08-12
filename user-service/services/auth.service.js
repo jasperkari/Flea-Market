@@ -18,7 +18,8 @@ module.exports = {
             { username, password: user.password, exp: expTime },
             secret
           );
-          return { token, expTime };
+          const admin = user.admin
+          return { token, expTime, admin };
         }
       }
       throw new Error(`Invalid credentials`);

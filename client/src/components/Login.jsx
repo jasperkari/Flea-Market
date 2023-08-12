@@ -1,12 +1,12 @@
 import '../styles/Login.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import Register from './Register';
 
-function Login() {
+function Login({ isLoggedIn, setIsLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showRegister, setShowRegister] = useState(false);
   const [loginFailed, setLoginFailed] = useState(false);
@@ -25,8 +25,10 @@ function Login() {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', username);
         localStorage.setItem('expTime', response.data.expTime);
+        localStorage.setItem('admin', response.data.admin);
         setIsLoggedIn(true);
         setLoginFailed(false);
+        window.location.reload();
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
@@ -34,14 +36,15 @@ function Login() {
       });
   }
 
-  function handleLogout() {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('expTime');
+    localStorage.removeItem('admin');
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
-  }
+  }, [setIsLoggedIn]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -53,7 +56,7 @@ function Login() {
       handleLogout();
     }
     setIsLoading(false);
-  }, []);
+  }, [handleLogout, setIsLoggedIn]);
 
   if (isLoading) {
     return <div />;
@@ -119,5 +122,10 @@ function Login() {
     </div>
   );
 }
+
+Login.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+};
 
 export default Login;
