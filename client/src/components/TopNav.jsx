@@ -28,11 +28,9 @@ function TopNav({ cart, onRemoveFromCart, showCart }) {
         </>
       )}
       {showCart && (
-        <>
-          <button className="cart" type="button" onClick={toggleCart}>
-            Shopping Cart
-          </button>
-        </>
+        <button className="cart" type="button" onClick={toggleCart}>
+          Shopping Cart
+        </button>
       )}
       {isCartVisible && (
         <div className="cart-dropdown">

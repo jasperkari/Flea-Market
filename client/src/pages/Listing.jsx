@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import '../styles/App.css';
 import React, { useState, useEffect } from 'react';

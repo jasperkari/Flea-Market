@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import '../styles/App.css';
 import React, { useState, useEffect } from 'react';
@@ -15,6 +16,7 @@ function App() {
   const [maxPrice, setMaxPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const admin = localStorage.getItem('admin') === 'true';
+  const username = localStorage.getItem('username');
 
   function fetchWithTimeout(url, options, timeout = 5000) {
     return Promise.race([
@@ -124,8 +126,8 @@ function App() {
               description={product.description}
               onAddToCart={() => addToCart(product)}
               isInCart={cart.some((item) => item.id === product.id)}
-              showBuyButton={!admin}
-              showRemoveButton={admin}
+              showBuyButton={!admin && product.username !== username}
+              showRemoveButton={admin || product.username === username}
             />
           ))
         )}

@@ -14,11 +14,13 @@ const service = CloudantV1.newInstance({
 
 const config = {
   endpoint: 's3.eu-de.cloud-object-storage.appdomain.cloud',
-  apiKeyId: process.env.s3_api,
+  apiKeyId: 'HBBw--JKn5otzUVSyknQE2GksF7Ek3LgdYQXkNZhUM53',
   serviceInstanceId:
     'crn:v1:bluemix:public:cloud-object-storage:global:a/a3b8e816ae29455ebc2f334d40da3749:e881314a-62a2-47e0-9cd9-2f249700d8ed::',
   signatureVersion: 'iam'
 };
+
+console.log(process.env.S3_API);
 
 const cos = new IBM.S3(config);
 
@@ -67,14 +69,14 @@ module.exports = {
       return productsWithImages;
     },
     async getUserProducts(ctx) {
-      const username = ctx.meta.user.username;
+      const { username } = ctx.meta.user;
 
       const response = await service.postFind({
         db: 'product',
         selector: {
           username
         }
-      });    
+      });
 
       const products = response.result.docs.map((row) => ({
         id: row._id,
@@ -86,10 +88,15 @@ module.exports = {
         description: row.description
       }));
 
-      console.log(products);
-
       const imagePromises = products.map(async (product) => {
         try {
+          cos.listBuckets((err, data) => {
+            if (err) {
+              console.log('Error:', err);
+            } else {
+              console.log('Buckets:', data.Buckets);
+            }
+          });
           const data = await cos
             .getObject({
               Bucket: 'productimage',
@@ -186,9 +193,7 @@ module.exports = {
       const { id } = ctx.params;
       const metaUsername = ctx.meta.user.username;
       const products = await ctx.call('prodDb.getProducts');
-      const productExists = products.find(
-        (product) => product.id === id
-      );
+      const productExists = products.find((product) => product.id === id);
 
       if (!productExists) {
         return { error: "This product doesn't exist" };
