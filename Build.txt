@@ -1,1 +1,0 @@
-docker build --build-arg JWT_SECRET=%JWT_SECRET% --build-arg CLOUDANT_API_KEY=%CLOUDANT_API_KEY% --build-arg s3_api=%s3_api% -t your_image_name .
