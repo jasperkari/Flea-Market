@@ -1,6 +1,6 @@
 # Flea-Market
 
-Flea-Market is a website for buying and selling second-hand goods. The front-end is built with React, while the back-end uses Moleculer microservices. Data is stored in IBM Cloudant and IBM Cloud Object Storage databases, and communication between servers is handled by a NATS server.
+This is a website for buying and selling second-hand goods. The front-end is built with React, while the back-end uses Moleculer microservices. Data is stored in IBM Cloudant and IBM Cloud Object Storage databases, and communication between servers is handled by a NATS server.
 
 ## Installation
 
