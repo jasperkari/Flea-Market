@@ -15,11 +15,12 @@ module.exports = {
         cors: {
           origin: '*',
           methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
-          allowedHeaders: ['Content-Type'],
+          allowedHeaders: ['Content-Type', 'Authorization'],
           exposedHeaders: [],
           credentials: false,
           maxAge: 3600
         },
+        use: [authenticate],
         aliases: {
           'GET /': 'orderDb.getOrders'
         }
@@ -38,9 +39,10 @@ module.exports = {
         use: [authenticate, multer().single('image')],
         aliases: {
           'POST /': async function create(req, res) {
-            const result = await this.broker.call('orderDb.createOrder', 
-            { ...req.body },
-            { meta: req.$ctx.meta },
+            const result = await this.broker.call(
+              'orderDb.createOrder',
+              { ...req.body },
+              { meta: req.$ctx.meta }
             );
             res.end(JSON.stringify(result));
           }

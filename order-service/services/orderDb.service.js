@@ -24,21 +24,23 @@ const cos = new IBM.S3(config);
 module.exports = {
   name: 'orderDb',
   actions: {
-    async getOrders() {
+    async getOrders(ctx) {
       const response = await service.postAllDocs({
         db: 'order',
         includeDocs: true
       });
 
-      const Orders = response.result.rows.map((row) => ({
-        id: row.doc._id,
-        rev: row.doc._rev,
-        imageKey: row.doc.imageKey,
-        name: row.doc.name,
-        username: row.doc.username,
-        price: row.doc.price,
-        description: row.doc.description
-      }));
+      const Orders = response.result.rows
+        .filter((row) => row.doc.buyer === ctx.meta.user.username)
+        .map((row) => ({
+          id: row.doc._id,
+          rev: row.doc._rev,
+          imageKey: row.doc.imageKey,
+          name: row.doc.name,
+          username: row.doc.username,
+          price: row.doc.price,
+          description: row.doc.description
+        }));
 
       const imagePromises = Orders.map(async (Order) => {
         try {
@@ -73,10 +75,10 @@ module.exports = {
         price: item.price,
         description: item.description,
         buyer: ctx.meta.user.username,
-        fullName: ctx.params.formData.fullName,
-        email: ctx.params.formData.email,
-        phone: ctx.params.formData.phone,
-        address: ctx.params.formData.address
+        fullName: ctx.params.fData.fullName,
+        email: ctx.params.fData.email,
+        phone: ctx.params.fData.phone,
+        address: ctx.params.fData.address
       }));
 
       const responses = await Promise.all(

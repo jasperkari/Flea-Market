@@ -15,8 +15,10 @@ function App() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const admin = localStorage.getItem('admin') === 'true';
   const username = localStorage.getItem('username');
+  const token = localStorage.getItem('token');
 
   function fetchWithTimeout(url, options, timeout = 5000) {
     return Promise.race([
@@ -71,6 +73,31 @@ function App() {
 
     return true;
   });
+
+  const onRemoveProduct = (product) => {
+    const data = {
+      id: product.id,
+    };
+
+    fetch('http://localhost:3002/userproducts', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          setError(true);
+        }
+      })
+      .catch(() => {
+        setError(true);
+      });
+  };
 
   return (
     <div className="App">
@@ -128,6 +155,8 @@ function App() {
               isInCart={cart.some((item) => item.id === product.id)}
               showBuyButton={!admin && product.username !== username}
               showRemoveButton={admin || product.username === username}
+              onRemoveProduct={() => onRemoveProduct(product)}
+              error={error}
             />
           ))
         )}

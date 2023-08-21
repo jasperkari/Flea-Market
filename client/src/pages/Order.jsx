@@ -18,7 +18,16 @@ function Order() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchWithTimeout('http://localhost:3003/orders', {}, 10000)
+    const token = localStorage.getItem('token');
+    fetchWithTimeout(
+      'http://localhost:3003/orders',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+      10000,
+    )
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
